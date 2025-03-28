@@ -2,6 +2,10 @@
 const nextConfig = {
   reactStrictMode: true,
   pageExtensions: ['tsx', 'ts'],
+  images: {
+    unoptimized: true,
+    domains: [],
+  },
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.resolve.fallback = {
@@ -13,10 +17,6 @@ const nextConfig = {
       };
     }
     return config;
-  },
-  output: 'export',
-  images: {
-    unoptimized: true,
   },
 }
 

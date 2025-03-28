@@ -2,9 +2,11 @@ import { auth } from './firebase';
 import { 
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-  signOut as firebaseSignOut
+  signOut as firebaseSignOut,
+  getAuth
 } from 'firebase/auth';
 import jwt from 'jsonwebtoken';
+import { app } from './firebase';
 
 export interface AuthResponse {
   token: string;
@@ -18,14 +20,18 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your-jwt-secret';
 
 // List of authorized teacher emails
 const AUTHORIZED_TEACHERS = [
-  'teacher@example.com',
-  // Add more teacher emails here
+  'cameronbrown1357@gmail.com',  // Add your email here
+  'teacher@example.com'
 ];
 
 export async function signIn(email: string, password: string): Promise<AuthResponse> {
   try {
+    console.log('Attempting login for:', email);
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    console.log('Firebase auth successful');
+    
     const role = AUTHORIZED_TEACHERS.includes(email) ? 'teacher' : 'student';
+    console.log('Assigned role:', role);
     
     const token = jwt.sign(
       { 
@@ -36,6 +42,7 @@ export async function signIn(email: string, password: string): Promise<AuthRespo
       JWT_SECRET,
       { expiresIn: '24h' }
     );
+    console.log('JWT created successfully');
 
     return {
       token,
@@ -50,30 +57,25 @@ export async function signIn(email: string, password: string): Promise<AuthRespo
   }
 }
 
-export async function signUp(email: string, password: string): Promise<AuthResponse> {
+export async function signUp(email: string, password: string) {
   try {
+    console.log('Initializing Firebase auth...');
+    const auth = getAuth(app);
+    console.log('Firebase auth initialized');
+
+    console.log('Creating user account...');
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    
-    const token = jwt.sign(
-      { 
-        email: userCredential.user.email, 
-        role: 'student',
-        uid: userCredential.user.uid 
-      },
-      JWT_SECRET,
-      { expiresIn: '24h' }
-    );
+    console.log('User account created:', userCredential.user.uid);
 
     return {
-      token,
       user: {
-        email: email,
-        role: 'student'
+        uid: userCredential.user.uid,
+        email: userCredential.user.email,
       }
     };
   } catch (error) {
-    console.error('Sign up error:', error);
-    throw new Error('Failed to create account');
+    console.error('Firebase signup error:', error);
+    throw error;
   }
 }
 

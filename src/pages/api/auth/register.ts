@@ -1,6 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { signUp } from '../../../utils/auth';
-import { GoogleSheetsService } from '../../../utils/googleSheets';
+import { CsvStorage } from '../../../utils/csvStorage';
+import jwt from 'jsonwebtoken';
+
+const JWT_SECRET = process.env.JWT_SECRET!;
 
 export default async function handler(
   req: NextApiRequest,
@@ -11,17 +13,46 @@ export default async function handler(
   }
 
   try {
-    const { email, password, name } = req.body;
+    console.log('Starting registration process...');
+    const { email, name, uid } = req.body;
     
-    // Create Firebase account
-    const auth = await signUp(email, password);
-    
-    // Add to Google Sheets
-    const sheetsService = new GoogleSheetsService();
-    await sheetsService.addNewStudent({ name, email });
+    if (!email || !name || !uid) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
 
-    res.status(200).json(auth);
+    // Add to CSV storage
+    const storage = new CsvStorage();
+    try {
+      await storage.addNewStudent({
+        name,
+        email,
+        progress: 0,
+        completionDate: null
+      });
+    } catch (error) {
+      if (error.message.includes('Validation failed:')) {
+        return res.status(400).json({ error: error.message });
+      }
+      if (error.message === 'Email already exists') {
+        return res.status(409).json({ error: 'Email already registered' });
+      }
+      throw error;
+    }
+
+    // Create JWT token
+    const token = jwt.sign(
+      { 
+        email,
+        role: 'student',
+        uid 
+      },
+      JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
+    res.status(200).json({ token });
   } catch (error) {
-    res.status(400).json({ error: 'Failed to register' });
+    console.error('Registration error:', error);
+    res.status(500).json({ error: 'Registration failed' });
   }
 } 

@@ -1,0 +1,19 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NEXT_PUBLIC_FIREBASE_API_KEY = "AIzaSyCjcNKOVJegWdk7uO6_6d31QJbM6X8WI-0"
+  NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN = "dead-break-education.firebaseapp.com"
+  NEXT_PUBLIC_FIREBASE_PROJECT_ID = "dead-break-education"
+  NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET = "dead-break-education.appspot.com"
+  NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID = "558582541396"
+  NEXT_PUBLIC_FIREBASE_APP_ID = "1:558582541396:web:65b028f118ff31ffd1d1c1"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200 

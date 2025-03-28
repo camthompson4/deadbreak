@@ -10,14 +10,25 @@ export default async function handler(
   }
 
   try {
-    const { name, email } = req.body;
+    const { fullName, email, phoneNumber, ssnLast4, optInAlerts, uid } = req.body;
 
-    if (!name || !email) {
-      return res.status(400).json({ error: 'Name and email are required' });
+    // Validate required fields
+    if (!fullName || !email || !phoneNumber || !ssnLast4 || !uid) {
+      return res.status(400).json({ error: 'Missing required fields' });
     }
 
+    // Add student to Google Sheets
     const sheetsService = new GoogleSheetsService();
-    await sheetsService.addNewStudent({ name, email });
+    await sheetsService.addNewStudent({
+      name: fullName,
+      email,
+      progress: 0,
+      completionDate: null,
+      phoneNumber,
+      ssnLast4,
+      optInAlerts,
+      uid
+    });
 
     res.status(200).json({ message: 'Student registered successfully' });
   } catch (error) {
