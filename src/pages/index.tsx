@@ -46,7 +46,7 @@ export default function HomePage() {
             <Logo size="large" showTagline />
           </Box>
           <Typography variant="h5" sx={{ mb: 6, color: '#b3b3b3' }}>
-            Your Ultimate Breaking Learning Platform
+            DeadBreak: Professional Breaking Education
           </Typography>
           <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center' }}>
             <Button 
