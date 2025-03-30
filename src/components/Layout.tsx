@@ -2,7 +2,6 @@ import React from 'react';
 import { AppBar, Toolbar, Container, Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { Logo } from './Logo';
-import { brandColors } from './BrandStyleGuide';
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
   backgroundColor: 'black',
@@ -15,10 +14,9 @@ interface LayoutProps {
 
 export function Layout({ children }: LayoutProps) {
   return (
-    <Box sx={{ 
+    <Box sx={{
       minHeight: '100vh',
-      backgroundColor: brandColors.background.dark,
-      color: 'white'
+      backgroundColor: 'background.default'
     }}>
       <StyledAppBar position="static">
         <Toolbar>

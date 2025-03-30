@@ -5,6 +5,13 @@ import { theme } from '../styles/theme';
 import { AuthProvider } from '../contexts/AuthContext';
 import { LoadingPage } from '../components/LoadingPage';
 import { useState, useEffect } from 'react';
+import { Inter } from 'next/font/google';
+
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  weight: ['400', '500', '600', '700'],
+});
 
 export default function App({ Component, pageProps }: AppProps) {
   const [isLoading, setIsLoading] = useState(true);
@@ -18,11 +25,13 @@ export default function App({ Component, pageProps }: AppProps) {
   }
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <AuthProvider>
-        <Component {...pageProps} />
-      </AuthProvider>
-    </ThemeProvider>
+    <main className={inter.className}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <AuthProvider>
+          <Component {...pageProps} />
+        </AuthProvider>
+      </ThemeProvider>
+    </main>
   );
 } 

@@ -71,13 +71,17 @@ const LessonItem = styled(ListItem)(({ theme }) => ({
   }
 }));
 
-const AchievementCard = styled(Card)(({ theme }) => ({
-  opacity: (props: { isUnlocked: boolean }) => props.isUnlocked ? 1 : 0.6,
+interface AchievementCardProps {
+  isUnlocked: boolean;
+}
+
+const AchievementCard = styled(Card)<AchievementCardProps>(({ theme, isUnlocked }) => ({
+  opacity: isUnlocked ? 1 : 0.6,
   backgroundColor: '#1a1a1a',
   border: '1px solid #333333',
   transition: 'all 0.3s ease-in-out',
   '&:hover': {
-    borderColor: props => props.isUnlocked ? theme.palette.primary.main : '#333333',
+    borderColor: isUnlocked ? theme.palette.primary.main : '#333333',
   }
 }));
 

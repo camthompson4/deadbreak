@@ -10,7 +10,7 @@ import {
   CircularProgress
 } from '@mui/material';
 import { useRouter } from 'next/router';
-import { useAuth } from '../auth/authContext';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function TeacherRegister() {
   const [email, setEmail] = useState('');
@@ -56,8 +56,11 @@ export default function TeacherRegister() {
         throw new Error('Failed to register as teacher');
       }
 
-      // Redirect to teacher dashboard
-      router.push('/teacher-dashboard');
+      // Set role in localStorage before navigation
+      localStorage.setItem('userRole', 'teacher');
+      
+      // Use replace instead of push to prevent back navigation
+      await router.replace('/teacher-dashboard');
     } catch (error) {
       console.error('Registration error:', error);
       setError(error instanceof Error ? error.message : 'Registration failed');
